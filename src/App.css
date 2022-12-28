@@ -1,0 +1,17 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.buttons {
+  padding: 2em;
+}
+
+#goBack{
+  padding: 10px 0 0 10px;
+  position: absolute;
+  left:0;
+  top:0;
+}
