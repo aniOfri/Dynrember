@@ -9,9 +9,6 @@
   padding: 2em;
 }
 
-#goBack{
-  padding: 10px 0 0 10px;
-  position: absolute;
-  left:0;
-  top:0;
+.buttons button{
+  margin-bottom: 10px;
 }

@@ -1,0 +1,36 @@
+.fileBrowse::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+.fileBrowse::before {
+    content: 'Select some files';
+    display: inline-block;
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 10pt;
+    }
+
+.TextInput{
+    width:100px;
+}
+
+.preview{
+    display: inline-block;
+    margin-left:10px
+}
+
+.mainDiv Button, input{
+    margin-bottom: 20px;
+}
+
+#goBack{
+    padding: 10px 0 0 10px;
+    position: absolute;
+    left:0;
+    top:0;
+  }
+  

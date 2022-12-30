@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import Create from './Create'
+import Game from './Game'
 
 function App() {
   const [page, setPage] = useState(0);
@@ -17,6 +18,9 @@ function App() {
           <div className="buttons">
             <button onClick={() => setPage(1)}>
               Create Session
+            </button><br></br>
+            <button onClick={() => setPage(2)}>
+              Start Session
             </button>
           </div>
         </div>
@@ -27,8 +31,12 @@ function App() {
         <Create setPage={setPage}></Create>
       )
       break;
+    case 2:
+      jsx = (
+        <Game setPage={setPage}></Game>
+      )
+      break;
   }
-  console.log(page);
 
   return (
     <div className="App">
