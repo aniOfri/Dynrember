@@ -12,7 +12,7 @@ function Create(props) {
     const Match = (id, val) =>{
         return {
             id: id,
-            value: val,
+            label: val,
             score: 0
         };
     }
@@ -33,7 +33,7 @@ function Create(props) {
 
         let txt = "";
         for (let match = 0; match < labels.length; match++){
-            txt += labels[match].id +","+labels[match].value+","+labels[match].score+"\n"
+            txt += labels[match].id +","+labels[match].label+","+labels[match].score+"\n"
         }
 
         var fileTxt = new File([txt], "score.txt", {type: "text/plain;charset=utf-8"});

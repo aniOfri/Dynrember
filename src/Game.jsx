@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import JSZip from 'jszip';
+import './Create.css';
 
 function Game(props) {
     const [loaded, setLoaded] = useState(false);
@@ -11,19 +12,16 @@ function Game(props) {
     const Match = (id, val, score) =>{
         return {
             id: id,
-            value: val,
+            label: val,
             score: score
         };
     }
     
     let jsx = (<div></div>);
     const OnLoad = (e) =>{
-        console.log(e.target.files[0])
-
         JSZip.loadAsync(e.target.files[0]).then(function (zip) {
             var imageSrc = {};
             for(var i in zip.files){
-                console.log(i);
                 let pIndex = i.indexOf('.'),
                 type = i.substring(pIndex + 1);
                 if (type != "txt"){
@@ -38,17 +36,15 @@ function Game(props) {
                         let matchesStr = text.split("\n");
                         let sliced;
                         let newMatches = []
-                        for (let i = 0; i< matchesStr.length; i++){
+                        for (let i = 0; i< matchesStr.length-1; i++){
                             sliced = matchesStr[i].split(',');
                             newMatches.push(Match(sliced[0], sliced[1], sliced[2]));
                         }
-                        console.log(newMatches);
                         setMatches(newMatches);
                     })
                 }
             }
             setImages(imageSrc);
-            console.log(imageSrc);
           });
         setLoaded(true);
     }
@@ -70,9 +66,21 @@ function Game(props) {
         </div>)
     }
     else{
-        jsx =(<div>
-
-        </div>)
+        let previewImages = [];
+        if (matches.length > 0){
+            for (let i = 0; i < Object.keys(matches).length; i++){
+                previewImages.push(<div key={i} className="preview">
+                    <img height="100" width="100px" src={images[i]} /><br></br>
+                    <p>{matches[i].id},{matches[i].label},{matches[i].score}</p>
+                </div>)
+            }
+            jsx =(<div>
+                {previewImages}
+            </div>)
+        }
+        else{
+            jsx = (<div></div>)
+        }
     }
     
     return (
