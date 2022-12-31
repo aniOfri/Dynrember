@@ -7,6 +7,9 @@ function Game(props) {
     const [loaded, setLoaded] = useState(false);
     const [images, setImages] = useState([]);
     const [matches, setMatches] = useState([]);
+    const [currentMatch, setCurrentMatch] = useState(0);
+    const [round, setRound] = useState(0);
+    const [lastAnswer, setLastAnswer] = useState("");
 
     // Match Object
     const Match = (id, val, score) =>{
@@ -33,13 +36,20 @@ function Game(props) {
                 }
                 else{
                     zip.files[i].async("string").then((text) => {
-                        let matchesStr = text.split("\n");
-                        let sliced;
-                        let newMatches = []
+                        let matchesStr = text.split("\n"),
+                        sliced,
+                        newMatches = [],
+                        lowestScore = 0,
+                        lowestScoreId = 0;
                         for (let i = 0; i< matchesStr.length-1; i++){
                             sliced = matchesStr[i].split(',');
-                            newMatches.push(Match(sliced[0], sliced[1], sliced[2]));
+                            newMatches.push(Match(parseInt(sliced[0]), sliced[1], parseInt(sliced[2])));
+
+                            if (lowestScore > sliced[2]){
+                                lowestScoreId = sliced[0];
+                            }
                         }
+                        setCurrentMatch(lowestScoreId);
                         setMatches(newMatches);
                     })
                 }
@@ -59,6 +69,43 @@ function Game(props) {
         return window.btoa( binary );
     }
 
+    const handleAnswer = (e) =>{
+        let id = e.target.name;
+        let tempMatches = matches;
+
+        if (currentMatch == id){
+            tempMatches[currentMatch].score+=1
+            setLastAnswer("Correct!");
+            
+        }
+        else{
+            tempMatches[currentMatch].score-=1
+            setLastAnswer("Wrong!");
+        }
+        
+        nextRound();
+        setMatches(tempMatches);
+    }
+
+    const nextRound = () =>{
+        let allScores = [];
+        for (let i = 0; i < matches.length; i++)
+            allScores.push(matches[i].score);
+        let lowestScore = Math.min(...allScores),
+        lowestScoreId = 0;
+
+        for (let i = 0; i < matches.length; i++){
+            if (lowestScore >= matches[i].score && parseInt(matches[i].id) != parseInt(currentMatch)){
+                lowestScoreId = matches[i].id;
+            }
+        }
+
+        console.log(matches)
+        
+        setCurrentMatch(lowestScoreId);
+        setRound(round+1)
+    }
+
     if (!loaded){
         jsx = (<div>
             <input type="file" className="fileBrowse" accept=".dyn"
@@ -68,19 +115,39 @@ function Game(props) {
     else{
         let previewImages = [];
         if (matches.length > 0){
-            for (let i = 0; i < Object.keys(matches).length; i++){
+            let selected = [];
+            do 
+            {
+                let shuffled = [];
+                for (let i = 0; i < Object.keys(matches).length; i++)
+                    shuffled.push(i);
+                shuffled = shuffled.sort(() => 0.5 - Math.random());
+                selected = shuffled.slice(0, 3);
+                if (!selected.includes(currentMatch))
+                    selected[Math.floor(Math.random()*3)] = parseInt(currentMatch);
+            }
+            while (hasDuplicates(selected));
+
+            for (let j in selected){
+                let i = selected[j];
                 previewImages.push(<div key={i} className="preview">
-                    <img height="100" width="100px" src={images[i]} /><br></br>
-                    <p>{matches[i].id},{matches[i].label},{matches[i].score}</p>
+                    <img name={matches[i].id} height="100" width="100px" src={images[i]} onClick={handleAnswer} /><br></br>
                 </div>)
             }
+
             jsx =(<div>
+                <h1>{matches[currentMatch].label}</h1>
                 {previewImages}
+                <p>{lastAnswer}</p>
             </div>)
         }
         else{
             jsx = (<div></div>)
         }
+    }
+
+    function hasDuplicates(array) {
+        return (new Set(array)).size !== array.length;
     }
     
     return (
