@@ -1,6 +1,7 @@
 import './Create.css'
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { FileUploader } from "react-drag-drop-files";
 import { useState } from 'react';
 
 function Create(props) {
@@ -66,12 +67,10 @@ function Create(props) {
     
     const filterDups = (fileList) => {
         let uniqueFiles = [];
-        let uniqueNames = [];
         let toAlert = false;
         fileList.forEach((element) => {
-            if (!uniqueNames.includes(element.name)) {
+            if (!uniqueFiles.includes(element)) {
                 uniqueFiles.push(element);
-                uniqueNames.push(element.name);
             }
             else{
                 toAlert = true;
@@ -82,7 +81,7 @@ function Create(props) {
     }
 
     const onChangeFile = (e) => {
-        let newFiles = filterDups(files.concat(Array.from(e.target.files)));
+        let newFiles = filterDups(files.concat(Array.from(e)));
         setFiles(newFiles);
         setNumOfImages(newFiles.length);
     }
@@ -90,6 +89,7 @@ function Create(props) {
     const resetValues = () => {
         setFiles([]);
         setNumOfImages(0);
+        setLabels([])
     }
 
     const labelSet = (event) => {
@@ -108,18 +108,26 @@ function Create(props) {
         setLabels(dict);
     }
     
+    const HandleRemove = (e) =>{
+        console.log(files, numOfImages);
+        let tempFiles = files;
+        tempFiles.splice(e.target.name, 1);
+        setFiles(tempFiles);
+        setNumOfImages(numOfImages-1);
+    }
 
     let images = []
     let imagesRow = []
     if (numOfImages > 0){
         for (let file = 0; file < files.length; file++){
-            if (file % Math.round(files.length/2) == 0){
-                images.push(<div key={file} >
+            if (file % Math.round(files.length/2) == 0 && imagesRow != []){
+                images.push(<div key={file}>
                                 {imagesRow}
                             </div>)
                 imagesRow = [];
             }
             imagesRow.push(<div className="preview">
+                            <button name={file} onClick={HandleRemove}>REMOVE</button><br></br>
                             <img height="100" width="100px" src={URL.createObjectURL(files[file])} /><br></br> 
                             <input id={file} className="TextInput" type="text" onChange={labelSet} />
                         </div>)
@@ -130,6 +138,7 @@ function Create(props) {
             </div>)
         }
     }
+    console.log(files, numOfImages, labels);
 
   return (
     <div className="mainDiv">
@@ -141,12 +150,12 @@ function Create(props) {
         <button onClick={() => {resetValues()}}>
                 Clear Images
         </button><br/>
-
-        <input multiple type="file" className="fileBrowse" accept="image/*"
-            onChange={onChangeFile}/><br></br>
+        <FileUploader className="uploader" handleChange={onChangeFile} multiple types={["PNG", "JPEG", "JPG"]} />
         
-        {images} <br></br>
-        {labels}
+        <br></br>
+        <div>
+            {images}
+        </div>
 
         <button onClick={() => {saveZip()}}>
                 Save

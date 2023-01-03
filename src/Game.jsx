@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import JSZip from 'jszip';
-import './Create.css';
+import './Game.css';
 
 function Game(props) {
     const [loaded, setLoaded] = useState(false);
@@ -122,9 +122,9 @@ function Game(props) {
                 for (let i = 0; i < Object.keys(matches).length; i++)
                     shuffled.push(i);
                 shuffled = shuffled.sort(() => 0.5 - Math.random());
-                selected = shuffled.slice(0, 3);
+                selected = shuffled.slice(0, Math.min(5,matches.length));
                 if (!selected.includes(currentMatch))
-                    selected[Math.floor(Math.random()*3)] = parseInt(currentMatch);
+                    selected[Math.floor(Math.random()*Math.min(5,matches.length))] = parseInt(currentMatch);
             }
             while (hasDuplicates(selected));
 

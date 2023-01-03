@@ -3,5 +3,14 @@
     position: absolute;
     left:0;
     top:0;
-  }
-  
+}
+
+.preview img{
+  cursor:pointer;
+  border-radius: 5px;
+}
+
+.preview{
+  display: inline-block;
+  margin-left:10px
+}

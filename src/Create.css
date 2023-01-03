@@ -21,10 +21,25 @@
 .preview{
     display: inline-block;
     margin-left:10px
-}
+  }
 
 .mainDiv Button, input{
     margin-bottom: 20px;
+}
+
+.uploader{
+    width:50px
+}
+
+.preview button{
+    width:70px;
+    height:30px;
+    margin-bottom: 5px;
+    font-size: 10px;
+}
+
+.preview img{
+    margin-top: 1px
 }
 
 #goBack{
