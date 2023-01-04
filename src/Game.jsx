@@ -10,6 +10,9 @@ function Game(props) {
     const [currentMatch, setCurrentMatch] = useState(0);
     const [round, setRound] = useState(0);
     const [lastAnswer, setLastAnswer] = useState("");
+    const [wrongAnswers, SetWrongAnswers] = useState(0);
+    const [correctAnswers, SetCorrectAnswers] = useState(0);
+    const [mode, setMode] = useState(2);
 
     // Match Object
     const Match = (id, val, score) =>{
@@ -69,23 +72,71 @@ function Game(props) {
         return window.btoa( binary );
     }
 
-    const handleAnswer = (e) =>{
+    // Image Matching Mode
+    const handleAnswerIMM = (e) =>{
         let id = e.target.name;
         let tempMatches = matches;
 
         if (currentMatch == id){
             tempMatches[currentMatch].score+=1
-            setLastAnswer("Correct!");
+            setLastAnswer("תשובה נכונה!");
+            SetCorrectAnswers(correctAnswers+1)
             
         }
         else{
             tempMatches[currentMatch].score-=1
-            setLastAnswer("Wrong!");
+            setLastAnswer("טעות!");
+            SetWrongAnswers(wrongAnswers+1)
         }
         
         nextRound();
         setMatches(tempMatches);
     }
+
+    const handleAnswerITM = (e) =>{
+        let id = e.target.id;
+        let tempMatches = matches;
+
+        if (currentMatch == id){
+            tempMatches[currentMatch].score+=1
+            setLastAnswer("תשובה נכונה!");
+            SetCorrectAnswers(correctAnswers+1)
+            
+        }
+        else{
+            tempMatches[currentMatch].score-=1
+            setLastAnswer("טעות!");
+            SetWrongAnswers(wrongAnswers+1)
+        }
+        
+        nextRound();
+        setMatches(tempMatches);
+    }
+    
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleAnswerIWM(event.target.value);
+        }
+      };
+
+    const handleAnswerIWM = (value) =>{
+        let tempMatches = matches;
+
+        if (value.toLowerCase() == matches[currentMatch].label.toLowerCase()){
+            tempMatches[currentMatch].score+=1
+            setLastAnswer("תשובה נכונה!");
+            SetCorrectAnswers(correctAnswers+1)
+        }
+        else{
+            tempMatches[currentMatch].score-=1
+            setLastAnswer("טעות!");
+            SetWrongAnswers(wrongAnswers+1)
+        }
+        
+        nextRound();
+        setMatches(tempMatches);
+    }
+
 
     const nextRound = () =>{
         let allScores = [];
@@ -100,10 +151,29 @@ function Game(props) {
             }
         }
 
-        console.log(matches)
-        
         setCurrentMatch(lowestScoreId);
-        setRound(round+1)
+        setRound(round+1);
+        
+        let newMode;
+        do newMode = (Math.floor(Math.random()*3));
+        while (newMode == mode)
+        setMode(newMode);
+    }
+
+    const GetRandomMatch = () => {
+        let selected = [];
+        do 
+        {
+            let shuffled = [];
+            for (let i = 0; i < Object.keys(matches).length; i++)
+                shuffled.push(i);
+            shuffled = shuffled.sort(() => 0.5 - Math.random());
+            selected = shuffled.slice(0, Math.min(5,matches.length));
+            if (!selected.includes(currentMatch))
+                selected[Math.floor(Math.random()*Math.min(5,matches.length))] = parseInt(currentMatch);
+        }
+        while (hasDuplicates(selected));
+        return selected;
     }
 
     if (!loaded){
@@ -113,39 +183,69 @@ function Game(props) {
         </div>)
     }
     else{
-        let previewImages = [];
-        if (matches.length > 0){
-            let selected = [];
-            do 
-            {
-                let shuffled = [];
-                for (let i = 0; i < Object.keys(matches).length; i++)
-                    shuffled.push(i);
-                shuffled = shuffled.sort(() => 0.5 - Math.random());
-                selected = shuffled.slice(0, Math.min(5,matches.length));
-                if (!selected.includes(currentMatch))
-                    selected[Math.floor(Math.random()*Math.min(5,matches.length))] = parseInt(currentMatch);
-            }
-            while (hasDuplicates(selected));
+        // MODE 0 - Image Matching Mode
+        if (mode == 0){
+            if (matches.length > 0){
+                let viewImages = [];
+                let selected = GetRandomMatch();
 
-            for (let j in selected){
-                let i = selected[j];
-                previewImages.push(<div key={i} className="preview">
-                    <img name={matches[i].id} height="100" width="100px" src={images[i]} onClick={handleAnswer} /><br></br>
+                for (let j in selected){
+                    let i = selected[j];
+                    viewImages.push(<div key={i} className="preview">
+                        <img name={matches[i].id} height="100" width="100px" src={images[i]} onClick={handleAnswerIMM} /><br></br>
+                    </div>)
+                }
+
+                jsx =(<div>
+                    <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
+                    <h1>{matches[currentMatch].label}</h1>
+                    {viewImages}
+                    <p>{lastAnswer}</p>
                 </div>)
             }
-
-            jsx =(<div>
-                <h1>{matches[currentMatch].label}</h1>
-                {previewImages}
-                <p>{lastAnswer}</p>
-            </div>)
+            else{
+                jsx = (<div></div>)
+            }
         }
+        // MODE 1 - Text Matching Mode
+        else if (mode == 1){
+            if (matches.length > 0){
+                let viewText = [];
+                let selected = GetRandomMatch();
+                for (let j in selected){
+                    let i = matches[selected[j]];
+                    viewText.push(<div key={i.id} className="preview">
+                        <button className="buttonText" id={i.id} onClick={handleAnswerITM} >{i.label}</button><br></br>
+                    </div>)
+                }
+                jsx =(<div>
+                    <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
+                    <img height="100" width="100px" src={images[matches[currentMatch].id]}/><br></br>
+                    {viewText}
+                    <p>{lastAnswer}</p>
+                </div>)
+
+            }
+            else{
+                jsx = (<div></div>)
+            }
+        }
+        // MODE 2 - Image Writing Mode
         else{
-            jsx = (<div></div>)
+            if (matches.length > 0){
+                jsx =(<div>
+                    <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
+                    <img height="100" width="100px" src={images[matches[currentMatch].id]}/><br></br>
+                    <input type="text" defaultValue="" onKeyDown={handleKeyDown}/>
+                    <p>{lastAnswer}</p>
+                </div>)
+
+            }
+            else{
+                jsx = (<div></div>)
+            }
         }
     }
-
     function hasDuplicates(array) {
         return (new Set(array)).size !== array.length;
     }

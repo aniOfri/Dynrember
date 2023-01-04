@@ -111,9 +111,18 @@ function Create(props) {
     const HandleRemove = (e) =>{
         console.log(files, numOfImages);
         let tempFiles = files;
+        let tempLabels = labels;
         tempFiles.splice(e.target.name, 1);
         setFiles(tempFiles);
         setNumOfImages(numOfImages-1);
+        try{
+            tempLabels.splice(e.target.name,1)
+            setLabels(tempLabels)
+        }catch (error) {
+            console.error(error);
+            // expected output: ReferenceError: nonExistentFunction is not defined
+            // (Note: the exact output may be browser-dependent)
+          }
     }
 
     let images = []
@@ -129,7 +138,7 @@ function Create(props) {
             imagesRow.push(<div className="preview">
                             <button name={file} onClick={HandleRemove}>REMOVE</button><br></br>
                             <img height="100" width="100px" src={URL.createObjectURL(files[file])} /><br></br> 
-                            <input id={file} className="TextInput" type="text" onChange={labelSet} />
+                            <input id={file} className="TextInput" type="text" value={valueLabel} onChange={labelSet} />
                         </div>)
         }
         if (imagesRow != []){

@@ -10,7 +10,19 @@
   border-radius: 5px;
 }
 
+.preview button.buttonText{
+  margin-top: 20px;
+  font-size:13px;
+  width: 80px;
+  height: 35px;
+}
+
 .preview{
   display: inline-block;
   margin-left:10px
+}
+
+button:focus:not(:focus-visible) {
+  outline: 0;
+  box-shadow: none;
 }
