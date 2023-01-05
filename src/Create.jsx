@@ -133,7 +133,7 @@ function Create(props) {
                 imagesRow = [];
             }
             imagesRow.push(<div className="preview">
-                            <button name={file} onClick={HandleRemove}>REMOVE</button><br></br>
+                            <button name={file} onClick={HandleRemove}>מחק</button><br></br>
                             <img height="100" width="100px" src={URL.createObjectURL(files[file])} /><br></br> 
                             <input id={file} className="TextInput" type="text" onChange={labelSet} />
                         </div>)
