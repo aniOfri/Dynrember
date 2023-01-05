@@ -28,7 +28,6 @@ function Create(props) {
 
     // Save file as session
     const saveZip = async () =>{
-        console.log(labels)
         if (numOfImages >= 5 && !hasNoEmpty(labels.map(a => a.label)) && !hasDuplicates(labels.map(a => a.label))){
             zipper()
         }

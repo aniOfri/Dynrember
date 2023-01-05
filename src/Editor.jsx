@@ -90,6 +90,50 @@ const concatToFiles = (filesArray) =>{
   setNumOfImages(newFiles.length);
 }
 
+    function hasDuplicates(array) {
+      return (new Set(array)).size !== array.length;
+    }
+
+    function hasNoEmpty(array) {
+      return Array.from(new Set(array)).map(a => a.replace(/\s/g, "")).includes("") || matches.length != numOfImages;
+    }
+
+    // Save file as session
+    const saveZip = async () =>{
+      if (numOfImages >= 5 && !hasNoEmpty(matches.map(a => a.label)) && !hasDuplicates(matches.map(a => a.label))){
+          zipper()
+      }
+      else{
+          if (numOfImages < 5){
+              alert("There are less than 5 images.");
+          }
+          else if (hasNoEmpty(labels.map(a => a.label))){
+              alert("Not every images is labeled.");
+          }
+          else{
+              alert("One or more of the labels are duplicated or empty");
+          }
+      }
+  }
+
+  const zipper = () => {
+      let zip = new JSZip();
+      for (let file = 0; file < files.length; file++) {
+          zip.file(file+".png", files[file]);
+      }
+
+      let txt = "";
+      for (let match = 0; match < matches.length; match++){
+          txt += matches[match].id +","+matches[match].label+","+matches[match].score+"\n"
+      }
+
+      var fileTxt = new File([txt], "score.txt", {type: "text/plain;charset=utf-8"});
+      zip.file("score.txt", fileTxt);
+
+      zip.generateAsync({type: "blob"}).then(content => {
+          saveAs(content, "test.dyn");
+      });
+  }
 
 const labelSet = (event) => {
   let dict = matches;
@@ -103,12 +147,10 @@ const labelSet = (event) => {
   if (!found){
       dict.push(Match(event.target.id, event.target.value));
   }
-  console.log(dict)
   setMatches(dict)
 }
 
 const HandleRemove = (e) =>{
-  console.log(files, numOfImages);
   let tempFiles = files;
   let tempMatches = matches;
   tempFiles.splice(e.target.name, 1);
@@ -127,20 +169,17 @@ const HandleRemove = (e) =>{
     }
 }
 
-console.log("filees", files)
-console.log("sosos", matches)
 let previmages = []
 let imagesRow = []
   try {
   if (numOfImages > 0){
       for (let file = 0; file < files.length; file++){
-          if (file % Math.round(files.length/2) == 0 && imagesRow != []){
-              previmages.push(<div key={file}>
-                              {imagesRow}
-                          </div>)
+          if (imagesRow.length % Math.floor(files.length/2) == 0 && imagesRow != []){
+                previmages.push(<div>
+                                {imagesRow}
+                            </div>)
               imagesRow = [];
           }
-          console.log(matches[file].label)
           imagesRow.push(<div key={imagesRow.length} className="preview">
                           <button name={file} onClick={HandleRemove}>REMOVE</button><br></br>
                           <img height="100" width="100px" src={URL.createObjectURL(files[file])} /><br></br> 
@@ -148,9 +187,17 @@ let imagesRow = []
                       </div>)
       }
       if (imagesRow != []){
-          previmages.push(<div>
+          if (imagesRow.length < 3){
+            previmages[previmages.length-1] = (<div>
+                {previmages[previmages.length-1].props.children}
+                {imagesRow}
+            </div>)
+          }
+          else{
+            previmages.push(<div>
               {imagesRow}
-          </div>)
+            </div>)
+          }
       }
   }
   }
