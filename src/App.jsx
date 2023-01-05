@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import Create from './Create'
 import Game from './Game'
+import Editor from './Editor'
 
 function App() {
   const [page, setPage] = useState(0);
@@ -19,9 +20,12 @@ function App() {
             <button onClick={() => setPage(1)}>
               Create Session
             </button><br></br>
+            <button onClick={() => setPage(3)}>
+              Edit Session
+            </button><br></br>
             <button onClick={() => setPage(2)}>
               Start Session
-            </button>
+              </button>
           </div>
         </div>
       )
@@ -36,6 +40,11 @@ function App() {
         <Game setPage={setPage}></Game>
       )
       break;
+    case 3:
+      jsx = (
+        <Editor setPage={setPage}></Editor>
+      )
+    break;
   }
 
   return (

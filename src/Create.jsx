@@ -63,7 +63,6 @@ function Create(props) {
             saveAs(content, "test.dyn");
         });
     }
-
     
     const filterDups = (fileList) => {
         let uniqueFiles = [];
@@ -147,7 +146,6 @@ function Create(props) {
             </div>)
         }
     }
-    console.log(files, numOfImages, labels);
 
   return (
     <div className="mainDiv">
