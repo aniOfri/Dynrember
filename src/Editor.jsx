@@ -6,8 +6,6 @@ import { useState } from 'react';
 
 function Editor(props) {
   const [files, setFiles] = useState([]);
-  const [labels, setLabels] = useState([]);
-  const [images, setImages] = useState([]);
   const [matches, setMatches] = useState([]);
   const [numOfImages, setNumOfImages] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -22,17 +20,20 @@ function Editor(props) {
 
   const OnLoad = (e) =>{
     JSZip.loadAsync(e.target.files[0]).then(function (zip) {
-        var imageSrc = {};
+        let filesCounter = 0;
+        let tempFiles = []
         for(var i in zip.files){
             let pIndex = i.indexOf('.'),
             type = i.substring(pIndex + 1);
             if (type != "txt"){
+                filesCounter += 1;
                 var fileName = zip.files[i];
-                var bufferValue = fileName._data.compressedContent,
-                str = _arrayBufferToBase64(bufferValue);
-                let res = 'data:image/' + type + ';base64,';
-                imageSrc[i.slice(0, i.indexOf('.'))] = res + str;
-                console.log(fileName)
+                var bufferValue = fileName._data.compressedContent;
+                let finblob = new Blob([bufferValue], {
+                  type: 'image/'+type
+                });
+                const FinalFile = new File([finblob], fileName.name, finblob)
+                tempFiles.push(FinalFile);
             }
             else{
                 zip.files[i].async("string").then((text) => {
@@ -53,19 +54,10 @@ function Editor(props) {
                 })
             }
         }
-        setNumOfImages(Object.keys(imageSrc).length);
-        setImages(imageSrc);
+        concatToFiles(tempFiles);
+        setNumOfImages(filesCounter);
       });
     setLoaded(true);
-  }
-  function _arrayBufferToBase64( buffer ) {
-    var binary = '';
-    var bytes = new Uint8Array( buffer );
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[i] );
-    }
-    return window.btoa( binary );
   }
 
   const filterDups = (fileList) => {
@@ -83,16 +75,26 @@ function Editor(props) {
     return uniqueFiles;
 }
 
-  const onChangeFile = (e) => {
-    let newFiles = filterDups(files.concat(Array.from(e)));
-    setFiles(newFiles);
-    setNumOfImages(newFiles.length);
+const onChangeFile = (e) => {
+    concatToFiles(Array.from(e))
 }
 
+const concatToFiles = (filesArray) =>{
+  let newFiles = filterDups(files.concat(filesArray)),
+  newMatches = matches;
+
+  newMatches.push(Match(matches.length, "", 0));
+
+  setMatches(newMatches);
+  setFiles(newFiles);
+  setNumOfImages(newFiles.length);
+}
+
+
 const labelSet = (event) => {
-  let dict = labels;
+  let dict = matches;
   let found = false;
-  for (let match = 0; match < labels.length; match++){
+  for (let match = 0; match < matches.length; match++){
       if (dict[match].id == event.target.id){
           dict[match].label = event.target.value;
           found = true;
@@ -101,24 +103,48 @@ const labelSet = (event) => {
   if (!found){
       dict.push(Match(event.target.id, event.target.value));
   }
-
-  setLabels(dict);
+  console.log(dict)
+  setMatches(dict)
 }
 
-  let previmages = []
-  let imagesRow = []
-  console.log(Object.keys(images));
+const HandleRemove = (e) =>{
+  console.log(files, numOfImages);
+  let tempFiles = files;
+  let tempMatches = matches;
+  tempFiles.splice(e.target.name, 1);
+  setFiles(tempFiles);
+  setNumOfImages(numOfImages-1);
+  try{
+      tempMatches.splice(e.target.name,1)
+      for (let i = 0; i< tempMatches.length; i++){
+        tempMatches[i].id = i;
+      }
+      setMatches(tempMatches)
+  }catch (error) {
+      console.error(error);
+      // expected output: ReferenceError: nonExistentFunction is not defined
+      // (Note: the exact output may be browser-dependent)
+    }
+}
+
+console.log("filees", files)
+console.log("sosos", matches)
+let previmages = []
+let imagesRow = []
+  try {
   if (numOfImages > 0){
-      for (let file = 0; file < Object.keys(images).length; file++){
+      for (let file = 0; file < files.length; file++){
           if (file % Math.round(files.length/2) == 0 && imagesRow != []){
               previmages.push(<div key={file}>
                               {imagesRow}
                           </div>)
               imagesRow = [];
           }
-          imagesRow.push(<div className="preview">
-                          <img height="100" width="100px" src={images[file]} /><br></br> 
-                          <input id={file} className="TextInput" type="text" onChange={labelSet} />
+          console.log(matches[file].label)
+          imagesRow.push(<div key={imagesRow.length} className="preview">
+                          <button name={file} onClick={HandleRemove}>REMOVE</button><br></br>
+                          <img height="100" width="100px" src={URL.createObjectURL(files[file])} /><br></br> 
+                          <input id={file} className="TextInput" defaultValue={matches[file].label} type="text" onChange={labelSet} />
                       </div>)
       }
       if (imagesRow != []){
@@ -126,6 +152,9 @@ const labelSet = (event) => {
               {imagesRow}
           </div>)
       }
+  }
+  }
+  catch(e){
   }
 
   let jsx;
