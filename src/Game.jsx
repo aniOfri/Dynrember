@@ -254,7 +254,7 @@ function Game(props) {
     <div>
         <div id="goBack">
             <button onClick={() => props.setPage(0)}>
-                Go Back
+                חזור אחורה
         </button>
         </div>
         {jsx}

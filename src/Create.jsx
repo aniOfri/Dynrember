@@ -33,13 +33,13 @@ function Create(props) {
         }
         else{
             if (numOfImages < 5){
-                alert("There are less than 5 images.");
+                alert("צריך להוסיף לפחות 5 תמונות.");
             }
             else if (hasNoEmpty(labels.map(a => a.label))){
-                alert("Not every images is labeled.");
+                alert("לא לכל תמונה יש שם.");
             }
             else{
-                alert("One or more of the labels are duplicated or empty");
+                alert("אחד או יותר מהשמות כבר נכתבו במקום אחר.");
             }
         }
     }
@@ -107,7 +107,6 @@ function Create(props) {
     }
     
     const HandleRemove = (e) =>{
-        console.log(files, numOfImages);
         let tempFiles = files;
         let tempLabels = labels;
         tempFiles.splice(e.target.name, 1);
@@ -150,11 +149,11 @@ function Create(props) {
     <div className="mainDiv">
         <div id="goBack">
             <button onClick={() => props.setPage(0)}>
-                Go Back
+                חזור אחורה
         </button>
         </div>
         <button onClick={() => {resetValues()}}>
-                Clear Images
+               נקה תמונות
         </button><br/>
         <FileUploader className="uploader" handleChange={onChangeFile} multiple types={["PNG", "JPEG", "JPG"]} />
         
@@ -164,7 +163,7 @@ function Create(props) {
         </div>
 
         <button onClick={() => {saveZip()}}>
-                Save
+                שמור קובץ
         </button>
     </div>
   )

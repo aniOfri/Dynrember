@@ -14,17 +14,17 @@ function App() {
       jsx = (
         <div>
           <div>
-            <h1>Dynrember - The Game</h1>
+            <h1>דינרמבר - משחק זכרון</h1>
           </div>
           <div className="buttons">
             <button onClick={() => setPage(1)}>
-              Create Session
+              צור קובץ
             </button><br></br>
             <button onClick={() => setPage(3)}>
-              Edit Session
+              ערוך קובץ
             </button><br></br>
             <button onClick={() => setPage(2)}>
-              Start Session
+              התחל משחק
               </button>
           </div>
         </div>

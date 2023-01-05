@@ -181,7 +181,7 @@ let imagesRow = []
               imagesRow = [];
           }
           imagesRow.push(<div key={imagesRow.length} className="preview">
-                          <button name={file} onClick={HandleRemove}>REMOVE</button><br></br>
+                          <button name={file} onClick={HandleRemove}>מחק</button><br></br>
                           <img height="100" width="100px" src={URL.createObjectURL(files[file])} /><br></br> 
                           <input id={file} className="TextInput" defaultValue={matches[file].label} type="text" onChange={labelSet} />
                       </div>)
@@ -210,7 +210,7 @@ let imagesRow = []
       <div className="mainDiv">
           <div id="goBack">
               <button onClick={() => props.setPage(0)}>
-                  Go Back
+                  חזור אחורה
           </button>
           </div>
           <FileUploader className="uploader" handleChange={onChangeFile} multiple types={["PNG", "JPEG", "JPG"]} />
@@ -220,7 +220,7 @@ let imagesRow = []
           </div>
 
           <button onClick={() => {saveZip()}}>
-                  Save
+                  שמור קובץ
           </button>
       </div>
     )
