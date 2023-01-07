@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=false; npm install && npm run build",
-    "start": "export NPM_CONFIG_PRODUCTION=false; node index.js",
-    "server": "concurrently \"nodemon index.js\" \"vite build --watch\"",
+    "start": "vite",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
