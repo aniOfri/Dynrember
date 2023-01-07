@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import Create from './Create'
 import Game from './Game'
+import Back from './Back'
 import Editor from './Editor'
 
 function App() {
@@ -9,6 +10,8 @@ function App() {
 
 
   let jsx;
+  let backButton = (
+    <Back setPage={setPage}/>)
   switch(page){
     case 0:
       jsx = (
@@ -31,18 +34,26 @@ function App() {
       )
       break;
     case 1:
-      jsx = (
-        <Create setPage={setPage}></Create>
+      jsx = (<div>
+        <Back setPage={setPage}/>
+        <Create/>
+      </div>
       )
       break;
     case 2:
       jsx = (
-        <Game setPage={setPage}></Game>
+        <div>
+        <Back setPage={setPage}/>
+        <Game/>
+      </div>
       )
       break;
     case 3:
       jsx = (
-        <Editor setPage={setPage}></Editor>
+        <div>
+        <Back setPage={setPage}/>
+        <Editor/>
+      </div>
       )
     break;
   }

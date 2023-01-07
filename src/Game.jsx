@@ -3,7 +3,7 @@ import { useState } from 'react';
 import JSZip from 'jszip';
 import './Game.css';
 
-function Game(props) {
+function Game() {
     const [loaded, setLoaded] = useState(false);
     const [images, setImages] = useState([]);
     const [matches, setMatches] = useState([]);
@@ -252,11 +252,6 @@ function Game(props) {
     
     return (
     <div>
-        <div id="goBack">
-            <button onClick={() => props.setPage(0)}>
-                חזור אחורה
-        </button>
-        </div>
         {jsx}
     </div>
     )

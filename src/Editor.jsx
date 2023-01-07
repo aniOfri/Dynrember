@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import { FileUploader } from "react-drag-drop-files";
 import { useState } from 'react';
 
-function Editor(props) {
+function Editor() {
   const [files, setFiles] = useState([]);
   const [matches, setMatches] = useState([]);
   const [numOfImages, setNumOfImages] = useState(0);
@@ -208,11 +208,6 @@ let imagesRow = []
   if (loaded){
     jsx = (
       <div className="mainDiv">
-          <div id="goBack">
-              <button onClick={() => props.setPage(0)}>
-                  חזור אחורה
-          </button>
-          </div>
           <FileUploader className="uploader" handleChange={onChangeFile} multiple types={["PNG", "JPEG", "JPG"]} />
           <br></br>
           <div>
@@ -227,8 +222,8 @@ let imagesRow = []
   }
   else{
     jsx = (<div>
-      <input type="file" className="fileBrowse" accept=".dyn"
-    onChange={OnLoad}/>
+        <input type="file" className="fileBrowse" accept=".dyn"
+      onChange={OnLoad}/>
     </div>)
   }
     return (

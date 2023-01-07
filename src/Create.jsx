@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import { FileUploader } from "react-drag-drop-files";
 import { useState } from 'react';
 
-function Create(props) {
+function Create() {
     const [files, setFiles] = useState([]);
     const [labels, setLabels] = useState([]);
     const [numOfImages, setNumOfImages] = useState(0);
@@ -147,11 +147,6 @@ function Create(props) {
 
   return (
     <div className="mainDiv">
-        <div id="goBack">
-            <button onClick={() => props.setPage(0)}>
-                חזור אחורה
-        </button>
-        </div>
         <button onClick={() => {resetValues()}}>
                נקה תמונות
         </button><br/>
