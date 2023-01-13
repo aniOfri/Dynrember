@@ -4,6 +4,7 @@ import Create from './Create'
 import Game from './Game'
 import Back from './Back'
 import Editor from './Editor'
+import SpeechRecog from './SpeechRecog'
 
 function App() {
   const [page, setPage] = useState(0);
@@ -60,6 +61,7 @@ function App() {
 
   return (
     <div className="App">
+      <SpeechRecog/>
       {jsx}
     </div>
   )

@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import JSZip from 'jszip';
+import Speech from './Speech';
 import './Game.css';
 
 function Game() {
@@ -155,7 +156,7 @@ function Game() {
         setRound(round+1);
         
         let newMode;
-        do newMode = (Math.floor(Math.random()*3));
+        do newMode = (Math.floor(Math.random()*4));
         while (newMode == mode)
         setMode(newMode);
     }
@@ -231,7 +232,7 @@ function Game() {
             }
         }
         // MODE 2 - Image Writing Mode
-        else{
+        else if (mode == 2){
             if (matches.length > 0){
                 jsx =(<div>
                     <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
@@ -240,6 +241,29 @@ function Game() {
                     <p>{lastAnswer}</p>
                 </div>)
 
+            }
+            else{
+                jsx = (<div></div>)
+            }
+        }
+        else{
+            if (matches.length > 0){
+                let viewImages = [];
+                let selected = GetRandomMatch();
+
+                for (let j in selected){
+                    let i = selected[j];
+                    viewImages.push(<div key={i} className="preview">
+                        <img name={matches[i].id} height="100" width="100px" src={images[i]} onClick={handleAnswerIMM} /><br></br>
+                    </div>)
+                }
+
+                jsx =(<div>
+                    <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
+                    <Speech value={matches[currentMatch].label}/><br/>
+                    {viewImages}
+                    <p>{lastAnswer}</p>
+                </div>)
             }
             else{
                 jsx = (<div></div>)

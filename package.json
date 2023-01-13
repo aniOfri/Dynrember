@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=false; npm install && npm run build",
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
@@ -17,6 +16,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.8",
+    "react-speech-kit": "^3.0.1",
     "surge": "^0.23.1"
   },
   "devDependencies": {
