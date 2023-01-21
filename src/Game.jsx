@@ -3,8 +3,25 @@ import { useState } from 'react';
 import JSZip from 'jszip';
 import Speech from './Speech';
 import './Game.css';
+import useSound from 'use-sound';
+import Confetti from 'react-confetti'
+import correct from './correct.mp3';
+import correct2 from './correct2.mp3';
+import incorrect from './incorrect.mp3';
 
+function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height
+    };
+  }
+  
 function Game() {
+    const dims = getWindowDimensions();
+    const [correctPlay] = useSound(correct);
+    const [correctPlay2] = useSound(correct2);
+    const [incorrectPlay] = useSound(incorrect);
     const [loaded, setLoaded] = useState(false);
     const [images, setImages] = useState([]);
     const [matches, setMatches] = useState([]);
@@ -161,6 +178,8 @@ function Game() {
         setMode(newMode);
     }
 
+
+
     const GetRandomMatch = () => {
         let selected = [];
         do 
@@ -184,6 +203,27 @@ function Game() {
         </div>)
     }
     else{
+        let confetti = "";
+        if (lastAnswer == "תשובה נכונה!"){
+            if (correctAnswers % 5 == 0){
+                correctPlay2()
+                confetti = (    
+                    <Confetti
+                    width={dims.innerWidth}
+                    height={dims.innerHeight}
+                    recycle={false}
+                  />)
+                }
+            else{
+            correctPlay()
+            }
+        }
+        else{
+            if (wrongAnswers >= 1){
+                incorrectPlay()
+            }
+        }
+
         // MODE 0 - Image Matching Mode
         if (mode == 0){
             if (matches.length > 0){
@@ -197,11 +237,12 @@ function Game() {
                     </div>)
                 }
 
+
                 jsx =(<div>
                     <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <h1>{matches[currentMatch].label}</h1>
                     {viewImages}
-                    <p>{lastAnswer}</p>
+                    <p>{lastAnswer} {confetti}</p>
                 </div>)
             }
             else{
@@ -223,7 +264,7 @@ function Game() {
                     <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <img height="100" width="100px" src={images[matches[currentMatch].id]}/><br></br>
                     {viewText}
-                    <p>{lastAnswer}</p>
+                    <p>{lastAnswer} {confetti}</p>
                 </div>)
 
             }
@@ -238,7 +279,8 @@ function Game() {
                     <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <img height="100" width="100px" src={images[matches[currentMatch].id]}/><br></br>
                     <input type="text" defaultValue="" onKeyDown={handleKeyDown}/>
-                    <p>{lastAnswer}</p>
+                    
+                    <p>{lastAnswer} {confetti}</p>
                 </div>)
 
             }
@@ -262,7 +304,7 @@ function Game() {
                     <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <Speech value={matches[currentMatch].label}/><br/>
                     {viewImages}
-                    <p>{lastAnswer}</p>
+                    <p>{lastAnswer} {confetti}</p>
                 </div>)
             }
             else{
