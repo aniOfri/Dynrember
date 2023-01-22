@@ -150,7 +150,7 @@ function Create() {
         <button onClick={() => {resetValues()}}>
                נקה תמונות
         </button><br/>
-        <FileUploader className="uploader" handleChange={onChangeFile} multiple types={["PNG", "JPEG", "JPG"]} />
+        <FileUploader className="uploader" handleChange={onChangeFile} multiple types={["PNG", "JPEG", "JPG", "GIF"]} />
         
         <br></br>
         <div>
