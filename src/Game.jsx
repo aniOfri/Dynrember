@@ -225,7 +225,8 @@ function Game() {
         }
         else{
             if (wrongAnswers >= 1){
-                incorrectPlay()
+                if (mode == 5)
+                    incorrectPlay()
             }
         }
 
