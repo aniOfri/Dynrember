@@ -219,7 +219,7 @@ function Game() {
                   />)
                 }
             else{
-                if (mode != 5)
+                if (mode == 5)
                     correctPlay()
             }
         }
