@@ -207,26 +207,26 @@ function Game() {
         </div>)
     }
     else{
-        let confetti = "";
-        if (lastAnswer == "תשובה נכונה!"){
-            if (correctAnswers % 5 == 0){
-                correctPlay2()
-                confetti = (    
-                    <Confetti
-                    width={dims.innerWidth}
-                    height={dims.innerHeight}
-                    recycle={false}
-                  />)
-                }
-            else{
-                if (mode == 5)
+        if (mode == 5){
+            let confetti = "";
+            if (lastAnswer == "תשובה נכונה!"){
+                if (correctAnswers % 5 == 0){
+                    correctPlay2()
+                    confetti = (    
+                        <Confetti
+                        width={dims.innerWidth}
+                        height={dims.innerHeight}
+                        recycle={false}
+                    />)
+                    }
+                else{
                     correctPlay()
+                }
             }
-        }
-        else{
-            if (wrongAnswers >= 1){
-                if (mode == 5)
+            else{
+                if (wrongAnswers >= 1){
                     incorrectPlay()
+                }
             }
         }
 
