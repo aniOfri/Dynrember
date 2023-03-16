@@ -208,27 +208,29 @@ function Game() {
     }
     else{
         let confetti = "";
-        if (mode == 5){
-            if (lastAnswer == "תשובה נכונה!"){
-                if (correctAnswers % 5 == 0){
+        if (lastAnswer == "תשובה נכונה!"){
+            if (correctAnswers % 5 == 0){
+                if (mode == 5)
                     correctPlay2()
-                    confetti = (    
-                        <Confetti
-                        width={dims.innerWidth}
-                        height={dims.innerHeight}
-                        recycle={false}
-                    />)
-                    }
-                else{
-                    correctPlay()
+                confetti = (    
+                    <Confetti
+                    width={dims.innerWidth}
+                    height={dims.innerHeight}
+                    recycle={false}
+                />)
                 }
-            }
             else{
-                if (wrongAnswers >= 1){
-                    incorrectPlay()
-                }
+                if (mode == 5)
+                    correctPlay()
             }
         }
+        else{
+            if (wrongAnswers >= 1){
+                if (mode == 5)
+                    incorrectPlay()
+            }
+        }
+
 
         // MODE 0 - Image Matching Mode
         if (mode == 0){
