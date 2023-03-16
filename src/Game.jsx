@@ -30,7 +30,7 @@ function Game() {
     const [lastAnswer, setLastAnswer] = useState("");
     const [wrongAnswers, SetWrongAnswers] = useState(0);
     const [correctAnswers, SetCorrectAnswers] = useState(0);
-    const [mode, setMode] = useState(2);
+    const [mode, setMode] = useState(0);
 
     // Match Object
     const Match = (id, val, score) =>{
@@ -107,7 +107,7 @@ function Game() {
             SetWrongAnswers(wrongAnswers+1)
         }
         
-        nextRound();
+        showAnswer();
         setMatches(tempMatches);
     }
 
@@ -127,7 +127,7 @@ function Game() {
             SetWrongAnswers(wrongAnswers+1)
         }
         
-        nextRound();
+        showAnswer();
         setMatches(tempMatches);
     }
     
@@ -155,8 +155,13 @@ function Game() {
         setMatches(tempMatches);
     }
 
+    const showAnswer = () =>{
+        setMode(5)
+    }
+
 
     const nextRound = () =>{
+
         let allScores = [];
         for (let i = 0; i < matches.length; i++)
             allScores.push(matches[i].score);
@@ -172,8 +177,8 @@ function Game() {
         setCurrentMatch(lowestScoreId);
         setRound(round+1);
         
-        let newMode;
-        do newMode = (Math.floor(Math.random()*4));
+        let newMode = 0;
+        do newMode = (Math.floor(Math.random()*2));
         while (newMode == mode)
         setMode(newMode);
     }
@@ -195,7 +200,6 @@ function Game() {
         while (hasDuplicates(selected));
         return selected;
     }
-
     if (!loaded){
         jsx = (<div>
             <input type="file" className="fileBrowse" accept=".dyn"
@@ -287,6 +291,15 @@ function Game() {
             else{
                 jsx = (<div></div>)
             }
+        }
+        else if (mode == 5){
+            jsx = (
+                <div>
+                    <h1>התשובה הנכונה</h1>
+                    <h1>{matches[currentMatch].label}</h1>
+                    <img height="100" width="100px" src={images[matches[currentMatch].id] } onClick={nextRound}></img>
+                </div>
+            )
         }
         else{
             if (matches.length > 0){
