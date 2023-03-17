@@ -32,8 +32,6 @@ function Game() {
     const [correctAnswers, SetCorrectAnswers] = useState(0);
     const [mode, setMode] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
-    const [currentAnswer, setCurrentAnswer] = useState(0);
-    const [lastMatches, setLastMatches] = useState([]);
 
     // Match Object
     const Match = (id, val, score) =>{
@@ -95,7 +93,6 @@ function Game() {
 
     // Image Matching Mode
     const handleAnswerIMM = (e) =>{
-
         let id = e.target.name;
         let tempMatches = matches;
 
@@ -117,7 +114,6 @@ function Game() {
 
     const handleAnswerITM = (e) =>{
         let id = e.target.id;
-        setCurrentAnswer(id);
         let tempMatches = matches;
 
         if (currentMatch == id){
@@ -186,15 +182,16 @@ function Game() {
 
     const GetRandomMatch = () => {
         let selected = [];
+        let rnd = new Math.seedrandom(round);
         do 
         {
             let shuffled = [];
             for (let i = 0; i < Object.keys(matches).length; i++)
                 shuffled.push(i);
-            shuffled = shuffled.sort(() => 0.5 - Math.random());
+            shuffled = shuffled.sort(() => 0.5 - rnd());
             selected = shuffled.slice(0, Math.min(5,matches.length));
             if (!selected.includes(currentMatch))
-                selected[Math.floor(Math.random()*Math.min(5,matches.length))] = parseInt(currentMatch);
+                selected[Math.floor(rnd()*Math.min(5,matches.length))] = parseInt(currentMatch);
         }
         while (hasDuplicates(selected));
 
@@ -236,17 +233,12 @@ function Game() {
         if (mode == 0){
             if (matches.length > 0){
                 let viewImages = [];
-                let selected = lastMatches;
-                if (!showAnswer && lastMatches == []){
-                    selected = GetRandomMatch();
-                    setLastMatches(selected);
-                }
-                    
-
+                let selected = GetRandomMatch();
+                
                 for (let j in selected){
                     let i = selected[j];
                     viewImages.push(<div key={i} className="preview">
-                        <img className={showAnswer ? matches[i].id == currentAnswer ? "correct" : "wrong" : ""} name={matches[i].id} height="100" width="100px" src={images[i]} onClick={handleAnswerIMM} /><br></br>
+                        <img className={showAnswer ? matches[i].id == currentMatch ? "correct" : "wrong" : "normal"} a name={matches[i].id} height="100" width="100px" src={images[i]} onClick={showAnswer ? null : handleAnswerIMM} /><br></br>
                     </div>)
                 }
 
@@ -258,7 +250,7 @@ function Game() {
                     <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <h1>{matches[currentMatch].label}</h1>
                     {viewImages}
-                    <p>{lastAnswer} {confetti}</p>
+                    <p>{confetti}</p>
                     {nextround}
                 </div>)
 
@@ -272,10 +264,11 @@ function Game() {
             if (matches.length > 0){
                 let viewText = [];
                 let selected = GetRandomMatch();
+
                 for (let j in selected){
                     let i = matches[selected[j]];
                     viewText.push(<div key={i.id} className="preview">
-                        <button className="buttonText" id={i.id} onClick={handleAnswerITM} >{i.label}</button><br></br>
+                        <button className={showAnswer ? matches[selected[j]].id == currentMatch ? "buttonText correct" : "buttonText wrong" : "buttonText normal"} id={i.id} onClick={handleAnswerITM} >{i.label}</button><br></br>
                     </div>)
                 }
 
@@ -288,7 +281,7 @@ function Game() {
                     <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <img height="100" width="100px" src={images[matches[currentMatch].id]}/><br></br>
                     {viewText}
-                    <p>{lastAnswer} {confetti}</p>
+                    <p>{confetti}</p>
                     {nextround}
                 </div>)
 

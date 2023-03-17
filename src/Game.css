@@ -28,9 +28,13 @@ button:focus:not(:focus-visible) {
 }
 
 .correct{
-  border: solid 3px lightgreen;  
+  border: solid 3px lightgreen;
 }
 
 .wrong{
   border: solid 3px red;
+}
+
+.normal{
+  border: solid 3px transparent;  
 }
