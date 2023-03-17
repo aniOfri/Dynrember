@@ -31,6 +31,9 @@ function Game() {
     const [wrongAnswers, SetWrongAnswers] = useState(0);
     const [correctAnswers, SetCorrectAnswers] = useState(0);
     const [mode, setMode] = useState(0);
+    const [showAnswer, setShowAnswer] = useState(false);
+    const [currentAnswer, setCurrentAnswer] = useState(0);
+    const [lastMatches, setLastMatches] = useState([]);
 
     // Match Object
     const Match = (id, val, score) =>{
@@ -92,6 +95,7 @@ function Game() {
 
     // Image Matching Mode
     const handleAnswerIMM = (e) =>{
+
         let id = e.target.name;
         let tempMatches = matches;
 
@@ -107,12 +111,13 @@ function Game() {
             SetWrongAnswers(wrongAnswers+1)
         }
         
-        showAnswer();
+        setShowAnswer(true);
         setMatches(tempMatches);
     }
 
     const handleAnswerITM = (e) =>{
         let id = e.target.id;
+        setCurrentAnswer(id);
         let tempMatches = matches;
 
         if (currentMatch == id){
@@ -127,7 +132,7 @@ function Game() {
             SetWrongAnswers(wrongAnswers+1)
         }
         
-        showAnswer();
+        setShowAnswer(true);
         setMatches(tempMatches);
     }
     
@@ -155,13 +160,8 @@ function Game() {
         setMatches(tempMatches);
     }
 
-    const showAnswer = () =>{
-        setMode(5)
-    }
-
 
     const nextRound = () =>{
-
         let allScores = [];
         for (let i = 0; i < matches.length; i++)
             allScores.push(matches[i].score);
@@ -181,9 +181,8 @@ function Game() {
         do newMode = (Math.floor(Math.random()*2));
         while (newMode == mode)
         setMode(newMode);
+        setShowAnswer(false);
     }
-
-
 
     const GetRandomMatch = () => {
         let selected = [];
@@ -198,6 +197,7 @@ function Game() {
                 selected[Math.floor(Math.random()*Math.min(5,matches.length))] = parseInt(currentMatch);
         }
         while (hasDuplicates(selected));
+
         return selected;
     }
     if (!loaded){
@@ -210,7 +210,7 @@ function Game() {
         let confetti = "";
         if (lastAnswer == "תשובה נכונה!"){
             if (correctAnswers % 5 == 0){
-                if (mode == 5)
+                if (showAnswer)
                     correctPlay2()
                 confetti = (    
                     <Confetti
@@ -220,13 +220,13 @@ function Game() {
                 />)
                 }
             else{
-                if (mode == 5)
+                if (showAnswer)
                     correctPlay()
             }
         }
         else{
             if (wrongAnswers >= 1){
-                if (mode == 5)
+                if (showAnswer)
                     incorrectPlay()
             }
         }
@@ -236,22 +236,32 @@ function Game() {
         if (mode == 0){
             if (matches.length > 0){
                 let viewImages = [];
-                let selected = GetRandomMatch();
+                let selected = lastMatches;
+                if (!showAnswer && lastMatches == []){
+                    selected = GetRandomMatch();
+                    setLastMatches(selected);
+                }
+                    
 
                 for (let j in selected){
                     let i = selected[j];
                     viewImages.push(<div key={i} className="preview">
-                        <img name={matches[i].id} height="100" width="100px" src={images[i]} onClick={handleAnswerIMM} /><br></br>
+                        <img className={showAnswer ? matches[i].id == currentAnswer ? "correct" : "wrong" : ""} name={matches[i].id} height="100" width="100px" src={images[i]} onClick={handleAnswerIMM} /><br></br>
                     </div>)
                 }
 
+                let nextround = ""
+                if (showAnswer)
+                    nextround = (<div><button className="buttonText" onClick={nextRound} >NEXT</button></div>)
 
                 jsx =(<div>
                     <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <h1>{matches[currentMatch].label}</h1>
                     {viewImages}
                     <p>{lastAnswer} {confetti}</p>
+                    {nextround}
                 </div>)
+
             }
             else{
                 jsx = (<div></div>)
@@ -268,11 +278,18 @@ function Game() {
                         <button className="buttonText" id={i.id} onClick={handleAnswerITM} >{i.label}</button><br></br>
                     </div>)
                 }
+
+                let nextround = ""
+                if (showAnswer)
+                    nextround = (<div><button className="buttonText" onClick={nextRound} >NEXT</button></div>)
+
+
                 jsx =(<div>
                     <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <img height="100" width="100px" src={images[matches[currentMatch].id]}/><br></br>
                     {viewText}
                     <p>{lastAnswer} {confetti}</p>
+                    {nextround}
                 </div>)
 
             }
@@ -295,15 +312,6 @@ function Game() {
             else{
                 jsx = (<div></div>)
             }
-        }
-        else if (mode == 5){
-            jsx = (
-                <div>
-                    <h1>התשובה הנכונה</h1>
-                    <h1>{matches[currentMatch].label}</h1>
-                    <img height="100" width="100px" src={images[matches[currentMatch].id] } onClick={nextRound}></img>
-                </div>
-            )
         }
         else{
             if (matches.length > 0){
@@ -332,7 +340,7 @@ function Game() {
     function hasDuplicates(array) {
         return (new Set(array)).size !== array.length;
     }
-    
+
     return (
     <div>
         {jsx}
