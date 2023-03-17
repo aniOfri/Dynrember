@@ -268,7 +268,7 @@ function Game() {
                 for (let j in selected){
                     let i = matches[selected[j]];
                     viewText.push(<div key={i.id} className="preview">
-                        <button className={showAnswer ? matches[selected[j]].id == currentMatch ? "buttonText correct" : "buttonText wrong" : "buttonText normal"} id={i.id} onClick={handleAnswerITM} >{i.label}</button><br></br>
+                        <button className={showAnswer ? matches[selected[j]].id == currentMatch ? "buttonText correct" : "buttonText wrong" : "buttonText normal"} id={i.id} onClick={showAnswer ? null : handleAnswerITM} >{i.label}</button><br></br>
                     </div>)
                 }
 
