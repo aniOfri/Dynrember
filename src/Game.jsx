@@ -332,7 +332,7 @@ function Game() {
 
     return (
     <div>
-        <h1 className='answers'>טעויות: {wrongAnswers} <br></br>  תשובות נכונות: {correctAnswers}</h1>
+        {loaded ? <h1 className='answers'>טעויות: {wrongAnswers} <br></br>  תשובות נכונות: {correctAnswers}</h1> : <div></div>}
         {jsx}
     </div>
     )
