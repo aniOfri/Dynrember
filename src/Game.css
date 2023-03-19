@@ -38,3 +38,8 @@ button:focus:not(:focus-visible) {
 .normal{
   border: solid 3px transparent;  
 }
+
+.answers{
+  font-size: 4vw;
+
+}

@@ -17,7 +17,7 @@ function App() {
       jsx = (
         <div>
           <div>
-            <h1>דינרמבר - משחק זכרון</h1>
+            <h1 className='title'>דינרמבר - משחק זכרון</h1>
           </div>
           <div className="buttons">
             <button onClick={() => setPage(1)}>

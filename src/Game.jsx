@@ -247,7 +247,6 @@ function Game() {
                     nextround = (<div><button className="buttonText" onClick={nextRound} >NEXT</button></div>)
 
                 jsx =(<div>
-                    <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <h1>{matches[currentMatch].label}</h1>
                     {viewImages}
                     <p>{confetti}</p>
@@ -278,7 +277,6 @@ function Game() {
 
 
                 jsx =(<div>
-                    <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <img height="100" width="100px" src={images[matches[currentMatch].id]}/><br></br>
                     {viewText}
                     <p>{confetti}</p>
@@ -294,7 +292,6 @@ function Game() {
         else if (mode == 2){
             if (matches.length > 0){
                 jsx =(<div>
-                    <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <img height="100" width="100px" src={images[matches[currentMatch].id]}/><br></br>
                     <input type="text" defaultValue="" onKeyDown={handleKeyDown}/>
                     
@@ -319,7 +316,6 @@ function Game() {
                 }
 
                 jsx =(<div>
-                    <h1>טעויות: {wrongAnswers} |  :תשובות נכונות {correctAnswers}</h1>
                     <Speech value={matches[currentMatch].label}/><br/>
                     {viewImages}
                     <p>{lastAnswer} {confetti}</p>
@@ -336,6 +332,7 @@ function Game() {
 
     return (
     <div>
+        <h1 className='answers'>טעויות: {wrongAnswers} <br></br>  תשובות נכונות: {correctAnswers}</h1>
         {jsx}
     </div>
     )
